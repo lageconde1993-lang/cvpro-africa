@@ -1,7 +1,7 @@
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 export default async function handler(req, res) {
@@ -43,12 +43,13 @@ Sépare clairement avec :
 Ton professionnel adapté aux grandes entreprises.`;
     }
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const message = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 2000,
       messages: [{ role: "user", content: prompt }],
     });
 
-    res.status(200).json({ content: completion.choices[0].message.content });
+    res.status(200).json({ content: message.content[0].text });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
